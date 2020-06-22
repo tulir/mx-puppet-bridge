@@ -234,8 +234,8 @@ export class RoomSyncroniser {
 				if (data.topic) {
 					room.topic = data.topic;
 				}
+				room.groupId = data.groupId;
 				if (data.groupId && this.bridge.groupSyncEnabled) {
-					room.groupId = data.groupId;
 					addGroup = room.groupId;
 				}
 				room.isDirect = Boolean(data.isDirect);
@@ -291,11 +291,12 @@ export class RoomSyncroniser {
 						doUpdate = true;
 						room.isDirect = data.isDirect;
 					}
-					if (data.groupId !== undefined && data.groupId !== null && data.groupId !== room.groupId
-						&& this.bridge.groupSyncEnabled) {
-						doUpdate = true;
-						removeGroup = room.groupId;
-						addGroup = data.groupId;
+					if (data.groupId !== undefined && data.groupId !== null && data.groupId !== room.groupId) {
+						if (this.bridge.groupSyncEnabled) {
+							doUpdate = true;
+							removeGroup = room.groupId;
+							addGroup = data.groupId;
+						}
 						room.groupId = data.groupId;
 					}
 				} catch (updateErr) {
@@ -440,11 +441,16 @@ export class RoomSyncroniser {
 			protocol,
 			channel,
 		};
-		if (room.groupId && this.bridge.groupSyncEnabled) {
-			const group = await this.bridge.groupSync.maybeGet({
-				groupId: room.groupId,
-				puppetId: room.puppetId,
-			});
+		if (room.groupId) {
+			let group;
+			if (this.bridge.groupSyncEnabled) {
+				group = await this.bridge.groupSync.maybeGet({
+					groupId: room.groupId,
+					puppetId: room.puppetId,
+				});
+			} else if (this.bridge.hooks.getGroupInfo) {
+				group = await this.bridge.hooks.getGroupInfo(room.puppetId, room.groupId);
+			}
 			if (group) {
 				const network: ISingleBridgeInformation = {
 					id: group.groupId,
