@@ -55,7 +55,7 @@ import {
 	IRetData, IRetList, IProtocolInformation, CreateRoomHook, CreateUserHook, CreateGroupHook, GetDescHook,
 	BotHeaderMsgHook, GetDataFromStrHook, GetDmRoomIdHook, ListUsersHook, ListRoomsHook, IRemoteUser, IRemoteRoom,
 	IRemoteGroup, IPuppetData, GetUserIdsInRoomHook, UserExistsHook, RoomExistsHook, GroupExistsHook, ResolveRoomIdHook,
-	IEventInfo,
+	IEventInfo, GetGroupInfoHook,
 } from "./interfaces";
 
 const log = new Log("PuppetBridge");
@@ -77,6 +77,7 @@ export interface IPuppetBridgeHooks {
 	botHeaderMsg?: BotHeaderMsgHook;
 	getDataFromStr?: GetDataFromStrHook;
 	getDmRoomId?: GetDmRoomIdHook;
+	getGroupInfo?: GetGroupInfoHook;
 	listUsers?: ListUsersHook;
 	listRooms?: ListRoomsHook;
 	getUserIdsInRoom?: GetUserIdsInRoomHook;
@@ -427,6 +428,10 @@ export class PuppetBridge extends EventEmitter {
 
 	public setGetDmRoomIdHook(hook: GetDmRoomIdHook) {
 		this.hooks.getDmRoomId = hook;
+	}
+
+	public setGetGroupInfoHook(hook: GetGroupInfoHook) {
+		this.hooks.getGroupInfo = hook;
 	}
 
 	public setListUsersHook(hook: ListUsersHook) {

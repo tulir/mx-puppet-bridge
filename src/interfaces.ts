@@ -191,6 +191,13 @@ export interface ISendingUser {
 	user: IRemoteUser | null;
 }
 
+export interface IGroupInfo {
+	groupId: string;
+	name?: string;
+	avatarMxc?: string;
+	externalUrl?: string;
+}
+
 export type CreateUserHook = (user: IRemoteUser) => Promise<IRemoteUser | null>;
 export type CreateRoomHook = (room: IRemoteRoom) => Promise<IRemoteRoom | null>;
 export type CreateGroupHook = (group: IRemoteGroup) => Promise<IRemoteGroup | null>;
@@ -201,6 +208,7 @@ export type GetDescHook = (puppetId: number, data: IPuppetData) => Promise<strin
 export type BotHeaderMsgHook = () => string;
 export type GetDataFromStrHook = (str: string) => Promise<IRetData>;
 export type GetDmRoomIdHook = (user: IRemoteUser) => Promise<string | null>;
+export type GetGroupInfoHook = (puppetId: number, groupId: string) => Promise<IGroupInfo | null>;
 export type ListUsersHook = (puppetId: number) => Promise<IRetList[]>;
 export type ListRoomsHook = (puppetId: number) => Promise<IRetList[]>;
 export type GetUserIdsInRoomHook = (room: IRemoteRoom) => Promise<Set<string> | null>;
